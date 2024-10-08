@@ -18,7 +18,7 @@ Order by rating_cnt desc
 
 --3. List all movies released in a specific year (e.g., 2020)
 
-Select title
+Select *
 From netflix
 Where type = 'Movie' and release_year = 2020
 
@@ -26,7 +26,7 @@ Where type = 'Movie' and release_year = 2020
 --4. Find the top 5 countries with the most content on Netflix
 
 Select 
-  unnnest(string_to_array (country,',')) as fixed_country, count(*) as cnt
+  unnest(string_to_array (country,',')) as fixed_country, count(*) as cnt
 From 
   netflix
 Where 
@@ -42,7 +42,7 @@ Limit 5
 
 Select *
 From netflix
-where type = 'movie'
+where type = 'Movie'
 order by split_part(duration,' ',1) desc
 
 
@@ -52,14 +52,14 @@ order by split_part(duration,' ',1) desc
 
 Select * 
 From netflix
-Where to_date(date_added, 'month dd, yyyy' >= current_date - Interval '5 years'
+Where to_date(date_added, 'month dd, yyyy') >= current_date - Interval '5 years'
 
 
 --7. Find all the movies/TV shows by director 'Rajiv Chilaka'!
 
 Select *
 From netflix
-Where director Like '%Rajiv Chilaka%'
+Where director iLike '%Rajiv Chilaka%'
 
 
 
@@ -82,6 +82,15 @@ where type = 'TV shows' And
 --10.Find each year and the average numbers of content release in India on netflix. 
 
 
+Select 
+	extract(year from to_date(date_added, 'Month dd,yyyy')) as extracted_year,
+	count(*) as tot_content,
+	Round(count(*)::numeric / (Select count(*) From netflix where country = 'India')::numeric*100,2)||'%' as contribution_perc
+From netflix
+Where 
+	country = 'India'
+Group by 
+	extracted_year
 
 
 
@@ -139,15 +148,7 @@ Group by 1
 
 
 
-create procedure pr_1(p_1 int,p_2 varchar)
-language plpgsql  As
-$$
-Declare 
 
-Begin 
-
-End
-$$
 
 
 
