@@ -145,7 +145,15 @@ Select
 From netflix
 Group by 1
 
+16. 
 
+Select 
+	Extract(Year from to_date(date_added, 'Month dd,yyyy')) as added_year,
+    	unnest (string_to_array (listed_in,',')) as category,
+    	count(*) as tot_cnt
+From netflix
+Group by Grouping sets((category,added_year),(added_year))
+order by tot_cnt desc, added_year
 
 
 
