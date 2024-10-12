@@ -145,15 +145,16 @@ Select
 From netflix
 Group by 1
 
-16. 
+--16. What are the most popular content categories added to Netflix each year? 
 
 Select 
 	Extract(Year from to_date(date_added, 'Month dd,yyyy')) as added_year,
     	unnest (string_to_array (listed_in,',')) as category,
     	count(*) as tot_cnt
 From netflix
+Where date_added is not null
 Group by Grouping sets((category,added_year),(added_year))
-order by tot_cnt desc, added_year
+order by added_year ,category , tot_cnt desc
 
 
 
